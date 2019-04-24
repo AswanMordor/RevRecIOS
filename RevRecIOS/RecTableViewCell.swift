@@ -7,9 +7,12 @@
 //
 
 import UIKit
+import AVFoundation
 
 class RecTableViewCell: UITableViewCell {
 
+    var player: AVAudioPlayer!
+    var cellDataURL:URL!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -32,6 +35,16 @@ class RecTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+   @objc func playRec(){
+        do {
+            player = try AVAudioPlayer(contentsOf: cellDataURL) //stitch audio files together when paused and start recording again, rn plays only after saved, disable play button
+            player?.play()
+        }
+        catch {
+            print("UH OH")
+        }
+    }
+    
     func setupView() {
         addSubview(cellView)
         cellView.addSubview(playButton)
@@ -51,6 +64,7 @@ class RecTableViewCell: UITableViewCell {
         playButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
         playButton.centerYAnchor.constraint(equalTo: cellView.centerYAnchor).isActive = true
         playButton.leftAnchor.constraint(equalTo: cellView.leftAnchor, constant: 0).isActive = true
+        playButton.addTarget(self, action: #selector(playRec), for: .touchUpInside)
     }
     
     let cellView: UIView = {
@@ -73,6 +87,7 @@ class RecTableViewCell: UITableViewCell {
     let playButton: UIButton = {
         let button = UIButton()
         button.setTitle("Play", for: .normal)
+        button.isUserInteractionEnabled = true
         button.titleLabel?.font = UIFont.systemFont(ofSize: 24)
         button.setTitleColor(UIColor.black, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import AVFoundation
 
 class RecListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -22,7 +21,6 @@ class RecListViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     var cellDataArray: [cellData] = []
-    var player: AVAudioPlayer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,15 +50,6 @@ class RecListViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
-    func playRec(recURL: URL){
-        do {
-            player = try AVAudioPlayer(contentsOf: recURL) //stitch audio files together when paused and start recording again, rn plays only after saved, disable play button
-            player?.play()
-        }
-        catch {
-            print("UH OH")
-        }
-    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cellDataArray.count
@@ -69,6 +58,7 @@ class RecListViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: RecTableViewCell = tableView.dequeueReusableCell(withIdentifier: "recCell", for: indexPath) as! RecTableViewCell
         cell.fileLabel.text = cellDataArray[indexPath.row].fileName
+        cell.cellDataURL = cellDataArray[indexPath.row].recURL
         return cell
     }
     
