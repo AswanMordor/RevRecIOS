@@ -30,7 +30,7 @@ class RecTableViewCell: UITableViewCell, AVAudioPlayerDelegate {
     }
 
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool){
-        playButton.setImage(#imageLiteral(resourceName: "brownPlayBttn.png"), for: .normal)
+        playButton.setImage(#imageLiteral(resourceName: "greyPlayBttn.png"), for: .normal)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -41,10 +41,10 @@ class RecTableViewCell: UITableViewCell, AVAudioPlayerDelegate {
     
    @objc func playRec(){
         do {
-            player = try AVAudioPlayer(contentsOf: cellDataURL) 
+            player = try AVAudioPlayer(contentsOf: cellDataURL)
             player.delegate = self
             player?.play()
-            playButton.setImage(#imageLiteral(resourceName: "redPlayBttn.png"), for: .normal)
+            playButton.setImage(#imageLiteral(resourceName: "redSimplePlayBttn.png"), for: .normal)
         }
         catch {
             print("UH OH")
@@ -93,7 +93,7 @@ class RecTableViewCell: UITableViewCell, AVAudioPlayerDelegate {
     let playButton: UIButton = {
         let button = UIButton()
         button.setTitle("Play", for: .normal)
-        button.setImage(#imageLiteral(resourceName: "brownPlayBttn.png"), for: .normal)
+        button.setImage(#imageLiteral(resourceName: "greyPlayBttn.png"), for: .normal)
         button.isUserInteractionEnabled = true
         button.titleLabel?.font = UIFont.systemFont(ofSize: 24)
         button.setTitleColor(UIColor.black, for: .normal)
