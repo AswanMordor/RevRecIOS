@@ -16,10 +16,13 @@ class RecViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var recordingLabel: UILabel!
+
     
     var recordingSession: AVAudioSession!
     var recorder: AVAudioRecorder!
     var player: AVAudioPlayer!
+    var recCircleTimer: Timer!
+    var testerButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +45,7 @@ class RecViewController: UIViewController, AVAudioRecorderDelegate {
         } catch {
             self.showErrorView()
         }
+         createRecCircle()
     }
     
     func showRecordingView() {
@@ -79,14 +83,56 @@ class RecViewController: UIViewController, AVAudioRecorderDelegate {
             // 5
             recorder = try AVAudioRecorder(url: recURL, settings: settings)
             recorder.delegate = self as AVAudioRecorderDelegate
+            recorder.isMeteringEnabled = true
             recorder.record()
+            recCircleTimer = Timer.scheduledTimer(timeInterval: 0.065, target: self, selector: #selector(updatePower), userInfo: nil, repeats: true)
         } catch {
             didFinishRecording(success: false)
         }
+
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+    }
+    
+    func createRecCircle(){
+        
+        testerButton = UIButton(type: .custom)
+        testerButton.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        //testerButton.clipsToBounds = true
+        testerButton.layer.backgroundColor = UIColor.red.cgColor
+        testerButton.center = self.view.center
+        testerButton.isUserInteractionEnabled = false
+        testerButton.layer.cornerRadius = 40/2
+        testerButton.translatesAutoresizingMaskIntoConstraints = true
+        testerButton.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.addSubview(testerButton)
+        
+        
+    }
+    
+    func getPower()->Float{
+        recorder.updateMeters()
+        return recorder.averagePower(forChannel: 0) * -1.0 / 120.0
+    }
+    
+    @objc func updatePower(){
+        let newDimms = Int((1 / getPower()) * 40)
+        print(newDimms)
+       // self.view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.05, animations: {() -> Void in
+            print("animating")
+            self.testerButton.frame = CGRect(x: 0, y: 0, width: newDimms, height: newDimms)
+            self.testerButton.center = self.view.center
+            self.testerButton.layer.cornerRadius = CGFloat(Int(newDimms)/2)
+            self.view.layoutIfNeeded()
+        })
     }
     
     func didFinishRecording(success: Bool){
             recorder.stop()
+            self.recCircleTimer.invalidate()
             recorder = nil
         if(success){
             recordButton.setTitle("Re-Record?", for: .normal)
@@ -109,6 +155,7 @@ class RecViewController: UIViewController, AVAudioRecorderDelegate {
         if recorder != nil {
             recorder.stop()
         }
+        recCircleTimer.invalidate()
         recorder = nil
         let recordURL = RecViewController.getSaveDirectory(fileName: "temp.m4a")
         do {
@@ -170,6 +217,7 @@ class RecViewController: UIViewController, AVAudioRecorderDelegate {
             catch{
                 //move didn't work
             }
+
             self.performSegue(withIdentifier: "toRecList", sender: nil)
         }
         
