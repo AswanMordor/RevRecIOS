@@ -29,6 +29,7 @@ class RecListViewController: UIViewController, UITableViewDelegate, UITableViewD
         recTableView.dataSource = self
         recTableView.register(RecTableViewCell.self, forCellReuseIdentifier: "recCell")
         recTableView.separatorColor = UIColor.white
+        recTableView.allowsSelection = false
         // Do any additional setup after loading the view.
     }
     

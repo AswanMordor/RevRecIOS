@@ -40,15 +40,27 @@ class RecTableViewCell: UITableViewCell, AVAudioPlayerDelegate {
     }
     
    @objc func playRec(){
+    if player != nil && player.isPlaying{
+        player.pause()
+        playButton.setImage(#imageLiteral(resourceName: "greyPlayBttn.png"), for: .normal)
+    }
+    else{
         do {
+            player = nil
             player = try AVAudioPlayer(contentsOf: cellDataURL)
             player.delegate = self
+            do {
+                try AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+            } catch _ {
+            }
+            player.volume = 1
             player?.play()
-            playButton.setImage(#imageLiteral(resourceName: "redSimplePlayBttn.png"), for: .normal)
+            playButton.setImage(#imageLiteral(resourceName: "redPauseBttn.png"), for: .normal)
         }
         catch {
             print("UH OH")
         }
+    }
     }
     
     func setupView() {

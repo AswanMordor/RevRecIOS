@@ -135,10 +135,10 @@ class RecViewController: UIViewController, AVAudioRecorderDelegate {
             self.recCircleTimer.invalidate()
             recorder = nil
         if(success){
-            recordButton.setTitle("Re-Record?", for: .normal)
+            recordButton.setTitle("Rec", for: .normal)
         }
         else{
-            recordButton.setTitle("Record", for: .normal)
+            recordButton.setTitle("Rec", for: .normal)
             let alert = UIAlertController(title: "Record failed", message: "There was a problem recording; please try again.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             present(alert, animated: true)
@@ -187,7 +187,7 @@ class RecViewController: UIViewController, AVAudioRecorderDelegate {
         }
         else if recorder.isRecording == true{
             recorder.pause()
-            recordButton.setTitle("Play", for: .normal)
+            recordButton.setTitle("Rec", for: .normal)
         }
         else{
             recorder.record()
